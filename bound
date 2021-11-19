@@ -1,48 +1,137 @@
-import numpy as np
-class Environment:
-    def __init__(self, map, start, goal):  # Definição do ambiente
-        self.map = np.array(map)
-        self.start = np.array(start)
-        self.goal = np.array(goal)
-        self.agent_position = np.array(start)
-        self.actions = np.array(
-            [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]])  # possiveis movimentos do agente
-    def initial_percepts(self):
-        available = []
-        for a in self.actions:
-            pos = self.start + a
-            if (0 <= pos[0] < self.map.shape[0]) and (0 <= pos[1] < self.map.shape[1]) and self.map[pos[0]][
-                pos[1]] == 0:  # Limite do agente para não sair fora do mapa
-                available.append(pos)
-        return {'available_positions': available,
-                'position': self.agent_position,
-                'goal': self.goal}
-    def signal(self, action):
-        self.agent_position = action['go_to']
-        available = []
-        for a in self.actions:
-            pos = self.agent_position + a
-            if (0 <= pos[0] < self.map.shape[0]) and (0 <= pos[1] < self.map.shape[1]) and self.map[pos[0]][
-                pos[1]] == 0:
-                available.append(pos)
-        return {'available_positions': available,
-                'position': self.agent_position,
-                'goal': self.goal}
+a partir de definições agente de importação
+importação numpy como np
+de scipy. distância de importação espacial
+importação aleatória
 
-class AgentA*:
-    
-        return []
+classe RandAgent(Agente):
+    """
+ Esta classe implementa um agente que explora o ambiente aleatoriamente
+ até atingir o alvo
+    """
+
+    def __init__(self, env, bound=100):
+        """Conecta-se à próxima porta disponível.
+        Args:
+ env: Uma referência a um ambiente.
+        """
+
+        Faça uma conexão com o ambiente usando o construtor de superclasse
+        Agente. __init__(self,env)
+        
+        Obtenha percepções iniciais
+        auto. percepts = env. initial_percepts()
+        
+        # Inicializa a fronteira com a postagem inicial 
+        auto. fronteira = [eu. percepções['current_position']]]
+        
+        # Initializa lista de nós visitados para poda de múltiplos caminhos
+        auto. visitou = []
+
+    def act(self):
+        """Implementa a ação do agente
+        """
+
+        Selecione um caminho da fronteira
+        caminho = auto. fronteira. pop(0)
+  
+        Visite o último nó no caminho
+        ação = {'visit_position': caminho[-1], 'caminho': caminho} 
+        # O agente envia uma posição e o caminho completo para o meio ambiente, o ambiente pode traçar o caminho na sala 
+        auto. perceptos = auto. env. sinal(ação)
+
+        Adicione nó visitado
+        auto. visitado. apêndice(caminho[-1])
+
+        Da lista de vizinhos viáveis dada pelo meio ambiente
+        Selecione um vizinho aleatório que ainda não foi visitado
+            
+        viable_neighbors = eu. percepções['vizinhos']
+
+        Se o agente não estiver preso
+        se viable_neighbors: 
+            aleatório. shuffle(viable_neighbors)
+            para n em viable_neighbors:
+                Anexar vizinho ao caminho e adicioná-lo à fronteira
+                auto. fronteira = [caminho + [n]] + self. fronteira
+
+    def run(self):
+        """"Mantém o agente agindo até encontrar o alvo
+        """
+        # Agente de execução
+        enquanto (eu. . percepções['current_position'! != self. percepções['alvo']). qualquer() e eu. fronteira:
+            auto. agir()
+        impressão(self. percepções['current_position'])
 
 
-if __name__ == "__main__":
-    map = [[0, 0, 1],
-           [1, 0, 1],
-           [1, 0, 0]]
+classe BBAgent(Agente):
+    """
+ Esta classe implementa um agente que encontra o caminho de distância mínima usando ramo e vinculado
+    """
 
-    env = Environment(map, [0, 0], [2, 2])
+    def __init__(self, env, bound=100):
+        """Conecta-se à próxima porta disponível.
+        Args:
+ env: Uma referência a um ambiente.
+        """
 
-    ag = AgentDFS(env)
+        Faça uma conexão com o ambiente usando o construtor de superclasse
+        Agente. __init__(self,env)
+        
+        Obtenha percepções iniciais
+        auto. percepts = env. initial_percepts()
+        
+        # Inicializa a fronteira com a postagem inicial 
+        auto. fronteira = [eu. percepções['current_position']]]
+        auto. custo = [0]
+        auto. vinculado = vinculado
+        auto. best_path = []
+        
+        # Initializa lista de nós visitados para poda de múltiplos caminhos
+        auto. visitou = []
 
-    path = ag.act()
+    def act(self):
+        """Implementa a ação do agente
+        """
 
-    print(path)
+        Selecione um caminho da fronteira
+        caminho = auto. fronteira. pop(0)
+        custo = self. custo. pop(0)
+        
+        se custo + distância. euclidiano(caminho[-1],self. percepções['alvo']) < eu. vinculado:
+            Visite o último nó no caminho
+            ação = {'visit_position': caminho[-1], 'caminho': caminho} 
+            # O agente envia uma posição e o caminho completo para o meio ambiente, o ambiente pode traçar o caminho na sala 
+            auto. perceptos = auto. env. sinal(ação)
+
+            Adicione nó visitado
+            auto. visitado. apêndice(caminho[-1])
+
+            se (eu. . percepções['current_position'] == self. percepções['alvo']). todos():
+                auto. best_path = caminho
+                auto. vinculado = custo
+                impressão(self. limite)
+
+            Da lista de vizinhos viáveis dada pelo meio ambiente
+            Selecione um vizinho aleatório que ainda não foi visitado
+            
+            viable_neighbors = eu. percepções['vizinhos']
+
+            Se o agente não estiver preso
+            se viable_neighbors: 
+                para n em viable_neighbors:
+                    Anexar vizinho ao caminho e adicioná-lo à fronteira
+                    auto. fronteira = [caminho + [n]] + self. fronteira
+                    auto. custo = [custo + distância. euclidean(caminho[-1],n)] + self. custar 
+
+    def run(self):
+        """"Mantém o agente agindo até encontrar o alvo
+        """
+        # Agente de execução
+        enquanto eu. fronteira:
+            auto. agir()
+        impressão(self. percepções['current_position'])
+
+        #for i no intervalo (1000):
+        # ação = {'visit_position': self.best_path[-1], 'caminho': self.best_path} 
+            # O agente envia uma posição e o caminho completo para o meio ambiente, o ambiente pode traçar o caminho na sala 
+        # self.percepts = self.env.signal(ação)
